@@ -3,6 +3,7 @@ package com.example.shoppinglist
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,6 +11,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.shoppinglist.ui.theme.ShoppingListTheme
 
@@ -30,6 +33,8 @@ fun ShoppingList() {
             var sItems by remember { mutableStateOf(listOf<ShoppingItem>()) }
             var showDialog by remember { mutableStateOf(false) }
             var itemId by remember { mutableStateOf(0) }
+            var itemName by remember { mutableStateOf("") }
+            var itemQuantity by remember { mutableStateOf("") }
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -48,7 +53,7 @@ fun ShoppingList() {
                     },
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
-                    Text(text = "Add an Item")
+                    Text(text = "Start a List")
                 }
                 LazyColumn(
                     modifier = Modifier
@@ -65,8 +70,16 @@ fun ShoppingList() {
                             Text("OK")
                         }
                     },
-                        text = { Text("I am a Dialog text") }
-                        )
+                        title = { Text("Add an Item") },
+                        text = {
+                            Column {
+                                OutlinedTextField(value = itemName,
+                                    onValueChange = {itemName = it},
+                                    singleLine = true,
+                                    modifier = Modifier.fillMaxWidth().padding(8.dp)
+                                )
+                            }
+                        })
                     }
                 }
             }
@@ -90,3 +103,9 @@ data class ShoppingItem(
     var quantity: Int,
     var editing: Boolean = false
 )
+
+@Preview(showBackground = true)
+@Composable
+fun Preview() {
+    ShoppingList()
+}
