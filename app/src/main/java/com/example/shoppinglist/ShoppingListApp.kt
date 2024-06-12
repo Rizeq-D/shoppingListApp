@@ -2,6 +2,7 @@ package com.example.shoppinglist
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,7 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.shoppinglist.ui.theme.ShoppingListTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun ShoppingList() {
     ShoppingListTheme {
@@ -44,11 +44,6 @@ fun ShoppingList() {
             ) {
                 Button(
                     onClick = {
-                        sItems = sItems + ShoppingItem(
-                            id = itemId++,
-                            name = "Item $itemId",
-                            quantity = 1
-                        )
                         showDialog = true
                     },
                     modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -56,9 +51,7 @@ fun ShoppingList() {
                     Text(text = "Start a List")
                 }
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
+                    modifier = Modifier.fillMaxSize().padding(16.dp)
                 ) {
                     items(sItems) { item ->
                         ShoppingItemRow(item = item)
@@ -66,9 +59,28 @@ fun ShoppingList() {
                 }
                 if (showDialog) {
                     AlertDialog(onDismissRequest = { showDialog = false },
-                        confirmButton = { Button(onClick = {showDialog = false}) {
-                            Text("OK")
+                        confirmButton =
+                        { Row(
+                            modifier = Modifier.fillMaxWidth().padding(8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween) {
+                            Button(onClick = {
+                                if (itemName.isNotBlank()) {
+                                    val newItem = ShoppingItem(
+                                        id = sItems.size+1,
+                                        name = itemName,
+                                        quantity = itemQuantity.toInt()
+                                    )
+                                    sItems = sItems + newItem
+                                    showDialog = false
+                                    itemName = ""
+                                }
+                            }) {
+                                Text("Add")}
+                            Button(onClick = {showDialog = false}) {
+                                Text("Cancel")
+                            }
                         }
+
                     },
                         title = { Text("Add an Item") },
                         text = {
@@ -76,7 +88,16 @@ fun ShoppingList() {
                                 OutlinedTextField(value = itemName,
                                     onValueChange = {itemName = it},
                                     singleLine = true,
-                                    modifier = Modifier.fillMaxWidth().padding(8.dp)
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                )
+                                OutlinedTextField(value = itemQuantity,
+                                    onValueChange = {itemQuantity = it},
+                                    singleLine = true,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
                                 )
                             }
                         })
