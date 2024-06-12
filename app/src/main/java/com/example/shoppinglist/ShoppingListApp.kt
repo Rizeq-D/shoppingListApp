@@ -38,12 +38,13 @@ fun ShoppingList() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(
-                    onClick = {showDialog = true
+                    onClick = {
                         sItems = sItems + ShoppingItem(
                             id = itemId++,
                             name = "Item $itemId",
                             quantity = 1
                         )
+                        showDialog = true
                     },
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
@@ -59,14 +60,18 @@ fun ShoppingList() {
                     }
                 }
                 if (showDialog) {
-                    AlertDialog(onDismissRequest = { showDialog = false }) {
-                        Text("I am a Dialog text")
+                    AlertDialog(onDismissRequest = { showDialog = false },
+                        confirmButton = { Button(onClick = {showDialog = false}) {
+                            Text("OK")
+                        }
+                    },
+                        text = { Text("I am a Dialog text") }
+                        )
                     }
                 }
             }
         }
     }
-}
 
 @Composable
 fun ShoppingItemRow(item: ShoppingItem) {
